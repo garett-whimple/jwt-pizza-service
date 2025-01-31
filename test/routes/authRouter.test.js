@@ -1,6 +1,6 @@
 const request = require('supertest');
 const app = require('../../src/service');
-const { Role, DB } = require('../../src/database/database.js');
+const {randomName, createAdminUser, expectValidJwt} = require('../utils')
 
 const testUser = { name: 'pizza diner', email: 'reg@test.com', password: 'a' };
 const adminName = randomName()
@@ -79,17 +79,11 @@ test('update user', async () => {
     expect(body.email).toBe(updateUser.email)
 })
 
-function expectValidJwt(potentialJwt) {
-    expect(potentialJwt).toMatch(/^[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*$/);
-}
+test('bad update user', async () => {
+    const updateUser = { email: 'new@test.com', password: 'new' }
+    const updateRes = await request(app).put(`/api/auth/${testUserId + 1}`).set('Authorization', `Bearer ${testUserAuthToken}`).send(updateUser)
+    const body = updateRes.body
 
-async function createAdminUser({password, name, email}) {
-    let user = { password: password, name: name, email: email, roles: [{ role: Role.Admin }] };
-
-    user = await DB.addUser(user);
-    return { ...user, password };
-}
-
-function randomName() {
-    return Math.random().toString(36).substring(2, 12);
-}
+    expect(updateRes.status).toBe(403)
+    expect(body.message).toBe('unauthorized')
+})
