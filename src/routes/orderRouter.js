@@ -112,6 +112,7 @@ orderRouter.post(
             metrics.trackPizzaOrder(order, false);
 
             res.status(500).send({ message: 'Error communicating with pizza factory' });
+            throw new Error(error)
         }
     })
 );

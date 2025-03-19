@@ -56,6 +56,7 @@ async function setAuthUser(req, res, next) {
             req.user = null;
             // Track failed auth verification for metrics
             metrics.trackAuth(false);
+            throw new Error(error);
         }
     }
     next();
