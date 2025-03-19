@@ -65,6 +65,12 @@ function trackAuth(success, userId) {
     }
 }
 
+function trackAuthLogout(userId) {
+    if (metrics.activeUsers.has(userId)) {
+        metrics.activeUsers.delete(userId)
+    }
+}
+
 // Track pizza orders
 function trackPizzaOrder(order, success, duration) {
     if (success) {
@@ -298,6 +304,7 @@ const reportingTimer = startMetricsReporting();
 module.exports = {
     track,
     trackAuth,
+    trackAuthLogout,
     trackPizzaOrder,
     startMetricsReporting,
     stopMetricsReporting: () => clearInterval(reportingTimer)

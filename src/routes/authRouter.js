@@ -147,6 +147,8 @@ async function setAuth(user) {
 async function clearAuth(req) {
     const token = readAuthToken(req);
     if (token) {
+        const tokenInfo = jwt.decode(token)
+        metrics.trackAuthLogout(tokenInfo.id)
         await DB.logoutUser(token);
     }
 }
