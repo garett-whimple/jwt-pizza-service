@@ -4,6 +4,7 @@ const { Role, DB } = require('../database/database.js');
 const { authRouter } = require('./authRouter.js');
 const { asyncHandler, StatusCodeError } = require('../endpointHelper.js');
 const metrics = require('../metrics');
+const logger = require('../logger')
 
 const orderRouter = express.Router();
 
@@ -99,18 +100,18 @@ orderRouter.post(
             if (r.ok) {
                 // Track successful pizza order with duration
                 metrics.trackPizzaOrder(order, true, duration);
-
+                logger.log('info', 'factory', `{ user: ${req.user.id}, orderReq: ${JSON.stringify(req.body)}`)
                 res.send({ order, reportSlowPizzaToFactoryUrl: j.reportUrl, jwt: j.jwt });
             } else {
                 // Track pizza creation failure
                 metrics.trackPizzaOrder(order, false);
-
+                logger.log('warn', 'factory', `{ user: ${req.user.id}, orderReq: ${JSON.stringify(req.body)}`)
                 res.status(500).send({ message: 'Failed to fulfill order at factory', reportPizzaCreationErrorToPizzaFactoryUrl: j.reportUrl });
             }
         } catch (error) {
             // Track pizza creation failure due to error
             metrics.trackPizzaOrder(order, false);
-
+            logger.log('error', 'factory', `{ user: ${req.user.id}, orderReq: ${JSON.stringify(req.body)}, error: ${error}`)
             res.status(500).send({ message: 'Error communicating with pizza factory' });
             throw new Error(error)
         }
