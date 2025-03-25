@@ -92,7 +92,7 @@
         {
           "direction": "backward",
           "editorMode": "builder",
-          "expr": "{service_name=\"jwt-pizza-service-dev\"} |= `` | json",
+          "expr": "{service_name=\"jwt-pizza-service-prd\"} |= `` | json",
           "queryType": "range",
           "refId": "A"
         }
@@ -163,7 +163,7 @@
           },
           "direction": "backward",
           "editorMode": "builder",
-          "expr": "{service_name=\"jwt-pizza-service-dev\"} |= `` | json",
+          "expr": "{service_name=\"jwt-pizza-service-prd\"} |= `` | json",
           "queryType": "range",
           "refId": "A"
         }
@@ -1293,5 +1293,5 @@
   "timezone": "",
   "title": "JWT Pizza Prd",
   "uid": "ceg9q6dqnhngge",
-  "version": 49
+  "version": 51
 }
